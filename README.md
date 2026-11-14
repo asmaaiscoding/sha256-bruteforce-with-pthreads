@@ -1,44 +1,34 @@
 # SHA256-BruteForce-With-Pthreads
 
-Developed during the **academic year 2024-2025.** Brute-force password cracking tool for SHA-256 hashes implemented in both sequential and parallel versions using Pthreads in C. This educational project demonstrates how multithreading can dramatically reduce execution time in cryptanalysis tasks by distributing the search space among multiple threads.
+**Developed during the academic year 2024-2025.** This educational project compares sequential and multithreaded brute-force searches for SHA-256 hashes, using C and Pthreads.
 
-The project includes:
-- sha256_seq.c – Sequential brute-force implementation
-- sha256_pthread.c – Parallel brute-force implementation using Pthreads
+## Overview
 
-##  Problem Description
+The programs search for a password by hashing candidate strings and comparing each result with a target SHA-256 hash. They support passwords of exactly five lowercase letters (`a-z`), for a total search space of 26^5 candidates.
 
-The goal is to **recover a 5-character lowercase password** (e.g., `"abcde"`) by comparing its SHA-256 hash with generated candidates.
+## Implementations
 
-###  Constraints
-- Passwords are exactly **5 characters long**
-- Only lowercase letters `a-z` are used
-- Hashing is done with **SHA-256**
+- `sha256_seq.c` checks candidates sequentially and stops when it finds a match.
+- `sha256_pthread.c` uses four Pthreads to search different portions of the candidate space concurrently. The threads stop searching when a match is found.
 
-##  How It Works
+## Build and run
 
-### Sequential Version (`sha256_seq.c`)
-- Iterates through all 5-letter lowercase combinations (`a` to `z`)
-- Hashes each candidate and compares it to the target hash
-- Stops when the correct password is found
+### Requirements
 
-###  Parallel Version (`sha256_pthread.c`)
-- Uses **Pthreads** to divide the search space
-- Each thread is responsible for passwords starting with specific letters
-- Threads terminate early if any of them finds the correct password
-  
-##  Compilation Instructions
+- GCC
+- OpenSSL development libraries
+- Pthreads
 
-###  Dependencies
-- `gcc` compiler
-- `libssl` for SHA-256 (`libssl-dev` on Linux)
-- `pthread` library
-
-###  Linux / macOS
+On Linux, install the OpenSSL development package (for example, `libssl-dev` on Debian or Ubuntu). Then compile the programs:
 
 ```bash
-# Compile sequential version
-gcc sha256_seq.c -o sha256_seq -lssl -lcrypto
+gcc sha256_seq.c -o sha256_seq -lcrypto
+gcc sha256_pthread.c -o sha256_pthread -pthread -lcrypto
+```
 
-# Compile parallel version
-gcc sha256_pthread.c -o sha256_pthread -lpthread -lssl -lcrypto
+Run either program; it will prompt you to enter the target SHA-256 hash as 64 hexadecimal characters:
+
+```bash
+./sha256_seq
+./sha256_pthread
+```
